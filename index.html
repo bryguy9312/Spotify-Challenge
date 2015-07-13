@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+<script src="app.js"></script>
+<link href="app.css" type="text/css" />
+  <meta charset="utf-8">
+  <title>Hispterfy</title>
+</head>
+<body>
+  <div ng-app="myApp" ng-controller="myCtrl">
+  <form name="songForm">
+    <div class="form-group">
+      <label>Spotify search:</label>
+      <input name="search" ng-minlength=3 placeholder="Enter an artist name to search" ng-model="artist" class="form-control" required></input>
+    <p class="help-block" ng-show="songForm.search.$error.minlength">Enter 3+ characters</p>
+    </div>
+    <div class="form-group">
+      <button ng-disabled="songForm.search.$invalid" class="btn btn-primary" ng-click="getArtist()" type="submit">Submit</button>
+    </div>
+  </form>
+  <div>
+      <div class="container-fixed">
+        <p ng-show="tracks.length>0" class="help-block">Click to sample</p>
+        <div   ng-repeat="artist in artists" class="col-xs-4 img">
+          <img width="400" height="400" ng-click="getTracks(artist.name)" title="{{artist.name}}" src="{{artist.images[0].url}}"></img>
+        </div>
+
+        <div id="track-space">
+          <ul>
+            <li ng-repeat="track in checkArtist()">{{track.name}}</li>
+          </ul>
+        </div>
+
+        <!--<div ng-class="track.preview_url == currentSong ? 'playing' : ''" class="col-xs-4 img">
+          <img width="400" height="400" ng-click="getSongs()">
+        </div>-->
+    </div>
+    </div>
+  </div>
+  </div>
+</body>
+</html>
