@@ -26,12 +26,12 @@
       <div class="container-fixed">
         <p ng-show="tracks.length>0" class="help-block">Click to sample</p>
         <div   ng-repeat="artist in artists" class="col-xs-4 img">
-          <img width="400" height="400" ng-click="getTracks(artist.name)" title="{{artist.name}}" src="{{artist.images[0].url}}"></img>
+          <img width="400" height="400" ng-click="getAlbums(artist)" title="{{artist.name}}" src="{{artist.images[0].url}}"></img>
         </div>
 
         <div id="track-space">
           <ul>
-            <li ng-repeat="track in checkArtist()">{{track.name}}</li>
+            <li ng-repeat="album in albums">{{album.name}}</li>
           </ul>
         </div>
 

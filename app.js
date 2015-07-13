@@ -4,7 +4,6 @@ var myApp = angular.module('myApp', []);
 var my_client_id = '2f7669bd26b3464ab0dce79a233e1803';
 var my_uri = "http://localhost:63342/Spotify-Challenge/index.html";
 
-
 var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   //checks url for anything after a hash, hacky way of ensuring authorization is obtained
   if (document.location.hash == "") {
@@ -19,38 +18,33 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
 
   $scope.getTracks= function(artist){
     $http.get(baseUrl + "search?type=track&q= " + "+artist:" + artist).success(function(response) {
-      $scope.tracks = response.tracks.items;
-      console.log(response);
+      data = response.tracks;
+      $scope.tracks = data.items;
+      console.log("response 1: " + response);
+      console.log("data: " + data);
+      $scope.artist = artist;
     });
-    $scope.artist = artist;
   };
 
-  $scope.checkArtist = function() {
-    var filteredTracks = [];
-    if ($scope.tracks == undefined)
-      return [];
-    console.log("track array inside function" + $scope.tracks.length);
-    /*$.each($scope.tracks, function(singleTrack) {
-      $.each(singleTrack.artists, function(d) {
-        if ($scope.artist.toLowerCase() == d.toLowerCase())
-          filteredTracks.add(d);
-      });
-    });*/
-
-    for(i=0; i < $scope.tracks.length; i++) {
-      var singleTrack = $scope.tracks[i];
-      for (j=0; j < singleTrack.artists.length; j++) {
-        console.log("user inputted artists: " +$scope.artist + " track artist: " + singleTrack.artists[j].name);
-        if ($scope.artist.toLowerCase() == singleTrack.artists[j].name.toLowerCase()) {
-          filteredTracks.push(singleTrack);
-        }
-      }
-    }
-
-
-    console.log(filteredTracks);
-    return filteredTracks;
+  $scope.getAlbums = function(artist) {
+    var albumData;
+    $scope.albums = [];
+    $http.get(baseUrl + "artists/"+artist.id+"/albums?album_type=album").success(function(response) {
+      albumData = response;
+      console.log("Initial get: " + albumData);
+      while(albumData.next != null) {
+        $scope.albums.push(albumData.items);
+        console.log($scope.albums);
+        $http.get(albumData.next).success(function(response) {
+          albumData = response;
+          console.log("Nested get: " + albumData);
+        });
+      };
+    });
+    console.log($scope.albums);
   };
+
+
 
 
   $scope.play = function(song) {
