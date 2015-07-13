@@ -5,6 +5,7 @@ var my_client_id = '2f7669bd26b3464ab0dce79a233e1803';
 var my_uri = "http://localhost:63342/Spotify-Challenge/index.html";
 
 var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
+  $scope.name;
   //checks url for anything after a hash, hacky way of ensuring authorization is obtained
   if (document.location.hash == "") {
     window.location = 'https://accounts.spotify.com/authorize?client_id='+ my_client_id +'&redirect_uri=' + my_uri + '&response_type=token&state=123';
@@ -26,26 +27,52 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     });
   };
 
-  $scope.getAlbums = function(artist) {
+
+  var getAlbumsHelper = function(page) {
+    var albumData;
+    $http.get(page.next).success(function(response) {
+      albumData = response;
+      albumData.items.forEach(function(d) {
+        if (d.available_markets.indexOf("US") != -1) {
+          $scope.albums.push(d);
+        }
+      });
+      if (albumData.next != null) {
+        getAlbumsHelper(albumData);
+      }
+    })
+  };
+
+  $scope.getAlbums = function(artist){
     var albumData;
     $scope.albums = [];
     $http.get(baseUrl + "artists/"+artist.id+"/albums?album_type=album").success(function(response) {
       albumData = response;
-      console.log("Initial get: " + albumData);
-      while(albumData.next != null) {
-        $scope.albums.push(albumData.items);
-        console.log($scope.albums);
-        $http.get(albumData.next).success(function(response) {
-          albumData = response;
-          console.log("Nested get: " + albumData);
-        });
-      };
+      albumData.items.forEach(function(d) {
+        if (d.available_markets.indexOf("US") != -1) {
+          $scope.albums.push(d);
+        }
+      });
+      if(albumData.next != null) {
+        getAlbumsHelper(albumData);
+      }
     });
-    console.log($scope.albums);
   };
 
+  $scope.getAlbumArt = function(imageLink) {
+    if (imageLink != null) {
+      return imageLink
+    }
+    return ""
+  };
 
-
+  $scope.getTracks = function(albumLink) {
+    console.log(albumLink);
+    $http.get(albumLink).success(function(response) {
+      $scope.tracks = response.tracks.items;
+      console.log($scope.tracks);
+    });
+  };
 
   $scope.play = function(song) {
     if($scope.currentSong == song) {
