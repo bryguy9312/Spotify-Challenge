@@ -1,7 +1,7 @@
 var baseUrl = 'https://api.spotify.com/v1/';
 var myApp = angular.module('myApp', []);
 var my_client_id = '2f7669bd26b3464ab0dce79a233e1803';
-var my_uri = "http://localhost:63342/Spotify-Challenge/index.html";
+var my_uri = "http://students.washington.edu/bwicker/info343/Spotify-Challenge/";
 
 var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.name;
