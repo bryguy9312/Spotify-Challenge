@@ -1,4 +1,3 @@
-var data;
 var baseUrl = 'https://api.spotify.com/v1/';
 var myApp = angular.module('myApp', []);
 var my_client_id = '2f7669bd26b3464ab0dce79a233e1803';
@@ -11,22 +10,21 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     window.location = 'https://accounts.spotify.com/authorize?client_id='+ my_client_id +'&redirect_uri=' + my_uri + '&response_type=token&state=123';
   }
   $scope.audioObject = {};
+  $scope.artist = "Nirvana";
   $scope.getArtist = function() {
+    $scope.albums = [];
+    $scope.tracks = [];
+    $scope.artists = [];
     $http.get(baseUrl + "search?type=artist&query=" + $scope.artist).success(function (response) {
-      $scope.artists = response.artists.items;
+      artists = response.artists.items;
+      artists.forEach(function(d) {
+        if (d.images[0] != null) {
+          $scope.artists.push(d);
+        };
+      });
     });
   };
-
-  $scope.getTracks= function(artist){
-    $http.get(baseUrl + "search?type=track&q= " + "+artist:" + artist).success(function(response) {
-      data = response.tracks;
-      $scope.tracks = data.items;
-      console.log("response 1: " + response);
-      console.log("data: " + data);
-      $scope.artist = artist;
-    });
-  };
-
+  $scope.getArtist();
 
   var getAlbumsHelper = function(page) {
     var albumData;
@@ -46,8 +44,12 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.getAlbums = function(artist){
     var albumData;
     $scope.albums = [];
+    $scope.tracks = [];
     $http.get(baseUrl + "artists/"+artist.id+"/albums?album_type=album").success(function(response) {
       albumData = response;
+      if (response.items == null) {
+        return;
+      }
       albumData.items.forEach(function(d) {
         if (d.available_markets.indexOf("US") != -1) {
           $scope.albums.push(d);
@@ -57,13 +59,6 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
         getAlbumsHelper(albumData);
       }
     });
-  };
-
-  $scope.getAlbumArt = function(imageLink) {
-    if (imageLink != null) {
-      return imageLink
-    }
-    return ""
   };
 
   $scope.getTracks = function(albumLink) {

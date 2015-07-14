@@ -21,5 +21,21 @@ img {
 }
 
 .playing {
-  color:lightblue;
+  color: rgb(129,183,26);
+}
+
+ul
+{
+  list-style-type: none;
+}
+
+#songForm {
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+div:empty { display: none }
+
+#albumRow {
+  margin-top: 50px;
 }

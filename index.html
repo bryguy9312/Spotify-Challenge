@@ -9,13 +9,13 @@
   <link href="bootstrap-horizon.css" rel="stylesheet" type="text/css" />
   <link href="app.css" rel = stylesheet type="text/css" />
   <meta charset="utf-8">
-  <title>Hispterfy</title>
+  <title>Spotify App</title>
 </head>
 <body>
   <div ng-app="myApp" ng-controller="myCtrl">
-  <form name="songForm">
+  <form id=songForm name="songForm">
     <div class="form-group">
-      <label>Spotify search:</label>
+      <label>Spotify artist search:</label>
       <input name="search" ng-minlength=3 placeholder="Enter an artist name to search" ng-model="artist" class="form-control" required></input>
     <p class="help-block" ng-show="songForm.search.$error.minlength">Enter 3+ characters</p>
     </div>
@@ -25,26 +25,31 @@
   </form>
 
   <div class="container-fixed">
+    <p ng-show="artists.length">Results for artist search:</p>
+    <p ng-show="!artists.length">No artists found</p>
       <div class="row row-horizon">
         <p ng-show="tracks.length>0" class="help-block">Click to sample</p>
         <div   ng-repeat="artist in artists" class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
           <img width="200" height="200" ng-click="getAlbums(artist)" title="{{artist.name}}" src="{{artist.images[0].url}}"></img>
         </div>
       </div>
-
-      <div class="row">
-        <div id="album-space" class="col-xs-8">
-          <div ng-repeat="album in albums" class="img">
+  <p ng-show="albums.length">Albums for Selected Artist:</p>
+      <div >
+        <div id="albumRow" class="row row-horizon">
+          <div ng-repeat="album in albums" class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
             <img width="200" height="200" ng-click="getTracks(album.href)" title='{{album.name}}' src="{{album.images[0].url}}"></img>
           </div>
+          <p ng-show="!albums.length">No albums found for this artist</p>
         </div>
-        <div>
-          <ul>
-            <li ng-class="track.preview_url == currentSong ? 'playing' : ''"  ng-repeat="track in tracks" class="col-xs-4" ng-click="play(track.preview_url)">{{track.name}}</li>
-          </ul>
-        </div>
-    </div>
-    </div>
+      </div>
+    <p ng-show="tracks.length">Tracks for selected Album: (click to sample)</p>
+      <div>
+        <ul>
+          <li ng-class="track.preview_url == currentSong ? 'playing' : ''"  ng-repeat="track in tracks" class="col-xs-4" ng-click="play(track.preview_url)">{{track.name}}</li>
+        </ul>
+      </div>
+
+  </div>
   </div>
   </div>
 </body>
